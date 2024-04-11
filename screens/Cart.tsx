@@ -24,7 +24,7 @@ const Cart = () => {
                 <Image style={styles.image} source={require("../designs/brands/casio.jpg")} />
                 <View style={{ flex: 1, marginLeft: 10 }}>
                     <Text style={styles.name}>test name</Text>
-                    <Text style={styles.price}>3999 VNĐ</Text>
+                    <Text style={styles.price}>3999 $</Text>
                     <View style={{ flexDirection: "row" }}>
                     <TouchableOpacity>
                         <Text style={styles.quantity}>-</Text>
@@ -41,7 +41,7 @@ const Cart = () => {
                 <Image style={styles.image} source={require("../designs/brands/citizen.jpg")} />
                 <View style={{ flex: 1, marginLeft: 10 }}>
                     <Text style={styles.name}>test name</Text>
-                    <Text style={styles.price}>3999 VNĐ</Text>
+                    <Text style={styles.price}>3999 $</Text>
                     <View style={{ flexDirection: "row" }}>
                     <TouchableOpacity>
                         <Text style={styles.quantity}>-</Text>
@@ -59,7 +59,7 @@ const Cart = () => {
                 <Image style={styles.image} source={require("../designs/brands/citizen.jpg")} />
                 <View style={{ flex: 1, marginLeft: 10 }}>
                     <Text style={styles.name}>test name</Text>
-                    <Text style={styles.price}>3999 VNĐ</Text>
+                    <Text style={styles.price}>3999 $</Text>
                     <View style={{ flexDirection: "row" }}>
                     <TouchableOpacity>
                         <Text style={styles.quantity}>-</Text>
@@ -77,7 +77,7 @@ const Cart = () => {
                 
 
             <View style={{ flexDirection: "row", justifyContent: "space-between", margin: 10 }}>
-                <Text style={styles.total}>Tổng tiền: 1000 VNĐ</Text>
+                <Text style={styles.total}>Tổng tiền: 1000 $</Text>
                 <TouchableOpacity style={styles.button}>
                 <Text style={{ color: "white" }}>Đặt hàng</Text>
                 </TouchableOpacity>

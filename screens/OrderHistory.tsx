@@ -188,14 +188,14 @@ const OrderHistoryScreen = () => {
             {
                 orderHistoryData.map(order => (
                     <View style={styles.orderItem}>
-                    <Text>Total Price: {order.totalPrice}</Text>
+                    <Text>Total Price: {order.totalPrice} $</Text>
                     <Text>Order Date: {order.orderDate}</Text>
                         <ScrollView horizontal>
                             {order.products.map((product) => (
                             <View style={styles.productCard} key={product.productId}>
                                 <Text>{product.productName}</Text>
                                 <Text>Quantity: {product.quantity}</Text>
-                                <Text>Price: {product.price}</Text>
+                                <Text>Price: {product.price} $</Text>
                                 <Image source={require('../designs/brands/casio.jpg')} style={styles.productImage} />
                             </View>
                             ))}

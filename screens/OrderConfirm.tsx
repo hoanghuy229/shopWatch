@@ -20,7 +20,7 @@ const OrderConfirm = () => {
             <Image style={styles.image} source={require("../designs/brands/rolex.jpg")} />
             <View style={{ flex: 1, marginLeft: 10 }}>
                 <Text style={styles.name}>test</Text>
-                <Text style={styles.price}>3000 VNĐ</Text>
+                <Text style={styles.price}>3000 $</Text>
                 <Text style={styles.quantity}>Số lượng:15</Text>
             </View>
             </View>
@@ -46,7 +46,7 @@ const OrderConfirm = () => {
                 <Text style={{ color: "white" }}>Xác nhận</Text>
                 </TouchableOpacity>
                 <View style={{ flexDirection: "row", justifyContent: "space-between", marginLeft: 50,marginTop:10 }}>
-                <Text style={styles.total}>Tổng tiền: 500 VNĐ</Text>
+                <Text style={styles.total}>Tổng tiền: 500 $</Text>
             </View>
             </View>
         </ScrollView>

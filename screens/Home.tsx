@@ -2,7 +2,7 @@ import React from "react";
 import { View, Image, Text, StyleSheet, ScrollView,TouchableOpacity } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
 import MyCarousel from "./Carousel";
-import { Link } from "@react-navigation/native";
+import PopularProducts from "./PopularProducts";
 
 const Home = (props: any) => {
     return (
@@ -29,6 +29,9 @@ const Home = (props: any) => {
             <View style={styles.popularProducts}>
                 <Text style={styles.titles}>popular products</Text>
                 <Text style={styles.links}>show all</Text>
+                <View style={styles.showList}>
+                    <PopularProducts></PopularProducts>
+                </View>
             </View>
         </ScrollView>
     );
@@ -38,6 +41,12 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#fff',
+    },
+    showList:{
+        width:"100%",
+        height:"100%",
+        marginTop:50,
+        marginLeft:-375
     },
     header: {
         marginTop: 70,
