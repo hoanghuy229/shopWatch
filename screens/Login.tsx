@@ -1,21 +1,33 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet,Alert } from 'react-native';
+import { login } from '../apis/UserApi';
 
 
-const Login = () => {
+const Login = (props:any) => {
     const [phoneNumber, setPhoneNumber] = useState('');
     const [password, setPassword] = useState('');
 
-    const handleForgotPassword = () => {
-        // Xử lý khi người dùng bấm vào nút Quên mật khẩu
-    };
-
-    const handleSignUp = () => {
-        // Xử lý khi người dùng bấm vào nút Đăng ký
-    };
-
-    const handleLogin = () => {
-        // Xử lý khi người dùng bấm vào nút Đăng nhập
+    const handleLogin = async () => {
+        // try{
+        //     const response = await login(phoneNumber,password);
+        //     const token = response;
+        //     await AsyncStorage.setItem('token',token);
+        //     Alert.alert('Thông báo', "thành công");
+        // }
+        // catch(error){
+        //     Alert.alert(
+        //         'Lỗi',
+        //         'Mật khẩu không chính xác. Vui lòng thử lại.',
+        //         [
+        //           {
+        //             text: 'Đóng',
+        //             onPress: () => console.log('Đóng'),
+        //             style: 'cancel',
+        //           },
+        //         ],
+        //         { cancelable: false }
+        //       );
+        // }
     };
 
     return (
@@ -41,10 +53,10 @@ const Login = () => {
                 />
                 <View style={styles.link}>
                     <Text style={styles.label}>chưa có tài khoản?</Text>
-                    <TouchableOpacity style={styles.CreateAccount} onPress={handleForgotPassword}>
-                        <Text style={styles.forgotPasswordText}>đăng ký</Text>
+                    <TouchableOpacity style={styles.CreateAccount}>
+                        <Text style={styles.forgotPasswordText} onPress={() => props.navigation.navigate('Register')}>đăng ký</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.forgotPasswordButton} onPress={handleForgotPassword}>
+                    <TouchableOpacity style={styles.forgotPasswordButton}>
                         <Text style={styles.forgotPasswordText}>Quên mật khẩu?</Text>
                     </TouchableOpacity>
                 </View>

@@ -1,56 +1,30 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { View, Image, Text, StyleSheet } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
 import { ScrollView } from "react-native-gesture-handler";
-import { TouchableOpacity, TouchableHighlight } from 'react-native';
+import { TouchableOpacity } from 'react-native';
+import { Product } from "../models/Product";
+import { getPopularProducts } from "../apis/ProductApi";
 
-const PopularProducts = () => {
-    // Dữ liệu sản phẩm nổi bật (tĩnh)
-    const popularProductsData = [
-        {
-            id: 1,
-            name: 'Product 1',
-            price: '$100',
-            image: require('../designs/brands/casio.jpg'),
-        },
-        {
-            id: 2,
-            name: 'Product 2',
-            price: '$150',
-            image: require('../designs/brands/citizen.jpg'),
-        },
-        {
-            id: 3,
-            name: 'Product 3',
-            price: '$120',
-            image: require('../designs/brands/hublot.jpg'),
-        },
-        {
-            id: 4,
-            name: 'Product 4',
-            price: '$200',
-            image: require('../designs/brands/rolex.jpg'),
-        },
-        {
-            id: 5,
-            name: 'Product 5',
-            price: '$180',
-            image: require('../designs/brands/citizen.jpg'),
-        },
-        {
-            id: 6,
-            name: 'Product 6',
-            price: '$90',
-            image: require('../designs/brands/casio.jpg'),
-        },
-    ];
+const PopularProducts = (props:any) => {
+    const [popularProductsData,setPopularProductsData] = useState<Product[]>([]);
+
+    useEffect(() => {
+        getPopularProducts()
+        .then(
+            (data) => {
+                setPopularProductsData(data);
+            }
+        )
+        .catch(error => console.log(error));
+    },[]);
 
     return (
         <ScrollView style={styles.container}>
             <View style={styles.productContainer}>
                 {popularProductsData.map((product, index) => (
                     <TouchableOpacity key={index} style={styles.productCard}>
-                        <Image source={product.image} style={styles.productImage} />
+                        <Image source={{uri : `http://10.0.2.2:8080/api/v1/products/images/${product.image}`}} style={styles.productImage} alt="product img"/>
                         <Text style={styles.productName}>{product.name}</Text>
                         <Text style={styles.productPrice}>{product.price} $</Text>
                         <View style={styles.buttonsContainer}>
@@ -58,7 +32,7 @@ const PopularProducts = () => {
                                 <Ionicons name="cart" size={20} color="darkorange" />
                             </TouchableOpacity>
                             <TouchableOpacity style={styles.detail}>
-                            <Ionicons name="eye" size={20} color="green" />
+                            <Ionicons name="eye" size={20} color="green" onPress={() => props.navigation.navigate('ProductDetail', { productId: product.product_id })}/>
                             </TouchableOpacity>
                         </View>
                     </TouchableOpacity>

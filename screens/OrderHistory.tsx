@@ -1,7 +1,8 @@
 import React from 'react';
 import { View, Text, StyleSheet, FlatList, Image, ScrollView } from 'react-native';
+import Header from './Header';
 
-const OrderHistoryScreen = () => {
+const OrderHistoryScreen = (props:any) => {
   // Dữ liệu lịch sử đặt hàng
   const orderHistoryData = [
     {
@@ -183,6 +184,7 @@ const OrderHistoryScreen = () => {
 
   return (
     <View style={styles.container}>
+        <Header navigation={props.navigation}></Header>
         <Text style={styles.title}>Lịch sử đặt hàng</Text>
         <ScrollView>
             {

@@ -2,11 +2,50 @@ import React, { useState } from "react";
 import { StyleSheet, View, Text, Image, TouchableOpacity, TextInput } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { Ionicons } from '@expo/vector-icons';
+import Popover from 'react-native-popover-view';
+import Header from "./Header";
 
-const ProductList = () => {
-    const [modalVisible, setModalVisible] = useState(false);
 
-    const categories = ["Đồng hồ", "Trang sức", "Túi xách", "Giày dép", "Quần áo"];
+const ProductList = (props:any) => {
+    const [isCatePopoverVisible, setIsCatePopoverVisible] = useState(false);
+    const [isPricePopoverVisible, setIsPricePopoverVisible] = useState(false);
+    const [selectedCategory, setSelectedCategory] = useState('');
+    const [selectedPriceBetween,setSelectedPriceBetWeen] = useState(0);
+    const [minPrice,setMinPrice] = useState(0);
+    const [maxPrice,setMaxPrice] = useState(0);
+
+
+    const closeCategpryPopover = (category:string) => {
+        setSelectedCategory(category);
+        setIsCatePopoverVisible(false);
+    };
+
+    const closePriceBetweenPopover = (priceBetween:number) => {
+        setSelectedPriceBetWeen(priceBetween);
+        setIsPricePopoverVisible(false);
+
+        if(priceBetween === 0){
+            setMaxPrice(0),
+            setMinPrice(0)
+        }
+        if(priceBetween === 1){
+            setMinPrice(50);
+            setMaxPrice(100);
+        }
+        if(priceBetween === 2){
+            setMinPrice(100);
+            setMaxPrice(200);
+        }
+        if(priceBetween === 3){
+            setMinPrice(200);
+            setMaxPrice(300);
+        }
+        if(priceBetween === 4){
+            setMinPrice(300);
+            setMaxPrice(400);
+        }
+
+    };
 
  // Dữ liệu sản phẩm nổi bật (tĩnh)
  const popularProductsData = [
@@ -48,10 +87,10 @@ const ProductList = () => {
     },
 ];
 
-
 return (
     <ScrollView style={styles.container}>
-        <ScrollView style={styles.filter}>
+        <Header navigation={props.navigation}></Header>
+          <View style={styles.header}>
             <View style={styles.searchContainer}>
                 <Ionicons name="search" size={20} color="black" style={styles.icon} />
                 <TextInput
@@ -60,10 +99,75 @@ return (
                     placeholderTextColor="#888"
                 />
             </View>
-            <TouchableOpacity onPress={() => setModalVisible(true)} style={styles.button}>
-                <Text style={styles.buttonText}>Danh mục</Text>
-            </TouchableOpacity>
-        </ScrollView>
+           
+            <Popover
+                isVisible={isCatePopoverVisible}
+                onRequestClose={() => setIsCatePopoverVisible(false)}
+                from={(
+                    <TouchableOpacity onPress={() => setIsCatePopoverVisible(true)} style={styles.button}>
+                        {
+                            selectedCategory == '' ? (
+                                <Text style={styles.buttonText}>Danh mục</Text>
+                            ) : 
+                            (
+                                <Text style={styles.buttonText}>{selectedCategory}</Text>
+                            )
+                        }
+                        
+                    </TouchableOpacity>
+                )}
+            >
+                <TouchableOpacity onPress={() => closeCategpryPopover("")}>
+                    <Text>tất cả</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => closeCategpryPopover("casio")}>
+                    <Text>Đồng hồ casio</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => closeCategpryPopover("hublot")}>
+                    <Text>Đồng hồ hublot</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => closeCategpryPopover("rolex")}>
+                    <Text>Đồng hồ rolex</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => closeCategpryPopover("citizen")}>
+                    <Text>Đồng hồ citizen</Text>
+                </TouchableOpacity>
+            </Popover>
+
+            <Popover
+                isVisible={isPricePopoverVisible}
+                onRequestClose={() => setIsPricePopoverVisible(false)}
+                from={(
+                    <TouchableOpacity onPress={() => setIsPricePopoverVisible(true)} style={styles.button}>
+                        {
+                            selectedCategory == '' ? (
+                                <Text style={styles.buttonText}>khoản giá</Text>
+                            ) : 
+                            (
+                                <Text style={styles.buttonText}>{selectedCategory}</Text>
+                            )
+                        }
+                        
+                    </TouchableOpacity>
+                )}
+            >
+                <TouchableOpacity onPress={() => closePriceBetweenPopover(0)}>
+                    <Text>tất cả</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => closePriceBetweenPopover(1)}>
+                    <Text>50 đến 100 $</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => closePriceBetweenPopover(2)}>
+                    <Text>100 đến 200 $</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => closePriceBetweenPopover(3)}>
+                    <Text>200 đến 300 $</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => closePriceBetweenPopover(4)}>
+                    <Text>300 đến 400 $</Text>
+                </TouchableOpacity>
+            </Popover>
+          </View>
         <View style={styles.productContainer}>
             {popularProductsData.map((product, index) => (
                 <TouchableOpacity key={index} style={styles.productCard}>
@@ -75,7 +179,7 @@ return (
                             <Ionicons name="cart" size={20} color="darkorange" />
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.detail}>
-                        <Ionicons name="eye" size={20} color="green" />
+                        <Ionicons name="eye" size={20} color="green"/>
                         </TouchableOpacity>
                     </View>
                 </TouchableOpacity>
@@ -92,6 +196,14 @@ container: {
     marginBottom:50,
     backgroundColor: '#fff',
 },
+
+header:{
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 10,
+    marginTop: 50,
+    marginBottom: 20,
+},
 searchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -100,12 +212,14 @@ searchContainer: {
     paddingHorizontal: 15,
     marginHorizontal: 10,
     marginVertical: 10,
+    width:150
 },
 button: {
     backgroundColor: 'lightblue',
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 20,
+    marginRight:10
 },
 icon: {
     marginRight: 10,

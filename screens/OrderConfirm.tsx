@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { StyleSheet, View, Text, Image, TouchableOpacity } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
+import Header from "./Header";
 
 
-const OrderConfirm = () => {
+const OrderConfirm = (props:any) => {
 
   const handleConfirmOrder = () => {
     // Gọi API để xác nhận đơn hàng
@@ -13,6 +14,7 @@ const OrderConfirm = () => {
 
   return (
     <View style={styles.container}>
+        <Header navigation={props.navigation}></Header>
         <ScrollView style={styles.scrollView}>
             <Text style={{ fontSize: 20, fontWeight: "bold",textAlign:'center',marginBottom:20 }}>Xác nhận đơn hàng</Text>
                 
@@ -58,16 +60,15 @@ const OrderConfirm = () => {
 
 const styles = StyleSheet.create({
     container: {
-      flex: 1,
-      justifyContent: "center",
-      alignItems: "center",
+      width:"100%"
     },
     scrollView:{
-        marginTop:100,
-        marginBottom:100,
+      marginTop:20,
+      marginLeft:30
     },
     confirm:{
-        flexDirection:"row"
+        flexDirection:"row",
+        marginLeft:10
     },
     item: {
       flexDirection: "row",

@@ -3,15 +3,14 @@ import { View, Image, Text, StyleSheet, ScrollView,TouchableOpacity } from "reac
 import { Ionicons } from '@expo/vector-icons';
 import MyCarousel from "./Carousel";
 import PopularProducts from "./PopularProducts";
+import Header from "./Header";
 
-const Home = (props: any) => {
+
+const Home = (props:any) => {
+
     return (
         <ScrollView style={styles.container}>
-            <View style={styles.header}>
-                <Ionicons name="menu" size={30} color="black" style={styles.icon} />
-                <Text style={styles.title}>Quốc Đại luxury</Text>
-                <Ionicons name="cart" size={30} color="black" style={styles.icon} />
-            </View>
+            <Header navigation={props.navigation}></Header>
             <Image source={require("../designs/banner.jpg")} style={styles.banner} />
             <View style={styles.container}>
                 <MyCarousel></MyCarousel>
@@ -28,9 +27,9 @@ const Home = (props: any) => {
             </ScrollView>
             <View style={styles.popularProducts}>
                 <Text style={styles.titles}>popular products</Text>
-                <Text style={styles.links}>show all</Text>
+                <Text style={styles.links} onPress={() => props.navigation.navigate('ProductList')}>show all</Text>
                 <View style={styles.showList}>
-                    <PopularProducts></PopularProducts>
+                    <PopularProducts navigation={props.navigation}></PopularProducts>
                 </View>
             </View>
         </ScrollView>
@@ -47,21 +46,6 @@ const styles = StyleSheet.create({
         height:"100%",
         marginTop:50,
         marginLeft:-375
-    },
-    header: {
-        marginTop: 70,
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        padding: 10,
-        backgroundColor: '#f0f0f0',
-    },
-    title: {
-        fontSize: 20,
-        fontWeight: 'bold',
-    },
-    icon: {
-        marginRight: 10,
     },
     banner: {
         marginTop: 30,

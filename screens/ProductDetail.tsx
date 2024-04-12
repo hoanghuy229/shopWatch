@@ -1,36 +1,56 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { View, Image, Text, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
+import Header from "./Header";
+import { Product } from "../models/Product";
+import { getCategory, getProductDetail } from "../apis/ProductApi";
+import { Category } from "../models/Category";
 
-const ProductDetail = () => {
-    // Dữ liệu chi tiết sản phẩm (tĩnh)
-    const productDetailData = {
-        image: require('../designs/brands/casio.jpg'),
-        category: 'Casio',
-        name: 'Product 1 là đồng hồ casio',
-        price: '$100',
-        quantity: 10,
-        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla eu ex vitae turpis placerat semper. Integer eleifend arcu eget consectetur aliquet.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla eu ex vitae turpis placerat semper. Integer eleifend arcu eget consectetur aliquet'
-    };
+
+const ProductDetail = (props:any) => {
+
+    const {productId} = props.route.params;
+    const productIdInt = parseInt(productId);
+
+
+    const [product,setProduct] = useState<Product>();
+    const [category,setCategory] = useState<Category>();
+
+    useEffect(() => {
+        getProductDetail(productIdInt)
+        .then(
+            data => setProduct(data)
+        )
+        .catch(error => console.log(error));
+    },[productIdInt])
+
+    useEffect(() => {
+        getCategory(product?.category_id)
+        .then(
+            category => setCategory(category)
+        )
+        .catch(error => console.log(error));
+    },[])
 
     return (
         <ScrollView style={styles.container}>
+            <Header navigation={props.navigation}></Header>
             <View style={styles.imageContainer}>
-                <Image source={productDetailData.image} style={styles.productImage} />
+                <Image source={{uri : `http://10.0.2.2:8080/api/v1/products/images/${product?.image}`}} style={styles.productImage} />
             </View>
             <View style={styles.productDetailContainer}>
-                <Text style={styles.productCategory}>Đồng hồ {productDetailData.category}</Text>
-                <Text style={styles.productName}>{productDetailData.name}</Text>
+                <Text style={styles.productCategory}>Đồng hồ {category?.name}</Text>
+                <Text style={styles.productName}>{product?.name}</Text>
 
                 <View style={styles.separator}></View>
 
-                <Text style={styles.productPrice}>{productDetailData.price}</Text>
-                <Text style={styles.productQuantity}>Số lượng: {productDetailData.quantity} sản phẩm</Text>
+                <Text style={styles.productPrice}>$ {product?.price}</Text>
+                <Text style={styles.productQuantity}>Số lượng: {product?.quantity} sản phẩm</Text>
 
                 <View style={styles.separator}></View>
 
                 <Text style={styles.productCategory}>Description</Text>
-                <Text style={styles.productDescription}>{productDetailData.description}</Text>
+                <Text style={styles.productDescription}>{product?.description}</Text>
 
                 <View style={styles.separator}></View>
 
@@ -41,7 +61,7 @@ const ProductDetail = () => {
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.buyNowButton}>
                         <Ionicons name="basket" size={20} color="green" />
-                        <Text style={styles.buyText}>Mua ngay</Text>
+                        <Text style={styles.buyText} onPress={() => props.navigation.navigate('Home')}>Mua ngay</Text>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -57,7 +77,7 @@ const styles = StyleSheet.create({
     },
     imageContainer:{
         alignItems:"center",
-        marginTop:70,
+        marginTop:10,
         width:"100%",
         height:250,
     },

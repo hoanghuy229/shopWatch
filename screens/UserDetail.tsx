@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet,Image } from 'react-native';
 
-const UserDetail = () => {
+const UserDetail = (props:any) => {
 
     const handleRegister = () => {
         // Xử lý khi người dùng bấm vào nút Quên mật khẩu
@@ -9,7 +9,7 @@ const UserDetail = () => {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.welcome}>User Information</Text>
+            <Text style={styles.welcome} onPress={() => props.navigation.navigate('Home')}>User Information</Text>
             <View style={styles.card}>
                 <Image source={require("../designs/user.jpg")} style={styles.avatar}></Image>
 
@@ -57,7 +57,7 @@ const UserDetail = () => {
                         secureTextEntry
                         value='********'
                     />
-                    <Text style={styles.changePass}>đổi mật khẩu</Text>
+                    <Text style={styles.changePass} onPress={() => props.navigation.navigate('ChangePassword')}>đổi mật khẩu</Text>
                 </View>
                 
                 <TouchableOpacity style={styles.loginButton} onPress={handleRegister}>

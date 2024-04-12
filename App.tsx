@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createDrawerNavigator } from '@react-navigation/drawer';
 import HomeScreen from './screens/Home';
 import Login from './screens/Login';
 import Register from './screens/Register';
@@ -11,24 +11,27 @@ import ChangePassword from './screens/ChangePassword';
 import OrderHistory from './screens/OrderHistory';
 import ProductDetail from './screens/ProductDetail';
 import ProductList from './screens/ProductList';
+import PopularProducts from './screens/PopularProducts';
+import DrawerContent from './screens/DrawContent';
 
-const Stack = createStackNavigator();
+const Drawer = createDrawerNavigator();
 
 const App = () => {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="ProductList">
-        {/* <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }}/> */}
-        {/* <Stack.Screen name="Login" component={Login} options={{ headerShown: false }}/> */}
-        {/* <Stack.Screen name="Register" component={Register} options={{ headerShown: false }}/> */}
-        {/* <Stack.Screen name="Cart" component={Cart} options={{ headerShown: false }}/> */}
-        {/* <Stack.Screen name="OrderConfirm" component={OrderConfirm} options={{ headerShown: false }}/> */}
-        {/* <Stack.Screen name="UserDetail" component={UserDetail} options={{ headerShown: false }}/> */}
-        {/* <Stack.Screen name="UserChangePasswordetail" component={ChangePassword} options={{ headerShown: false }}/> */}
-        {/* <Stack.Screen name="OrderHistory" component={OrderHistory} options={{ headerShown: false }}/> */}
-        {/* <Stack.Screen name="ProductDetail" component={ProductDetail} options={{ headerShown: false }}/> */}
-        <Stack.Screen name="ProductList" component={ProductList} options={{ headerShown: false }}/>
-      </Stack.Navigator>
+      <Drawer.Navigator initialRouteName="Home" drawerContent={props => <DrawerContent {...props} />}>
+        <Drawer.Screen name="Home" component={HomeScreen} options={{ headerShown: false }}/> 
+        <Drawer.Screen name="Login" component={Login} options={{ headerShown: false }} />
+        <Drawer.Screen name="Register" component={Register} options={{ headerShown: false }}/> 
+        <Drawer.Screen name="Cart" component={Cart} options={{ headerShown: false }}/> 
+        <Drawer.Screen name="OrderConfirm" component={OrderConfirm} options={{ headerShown: false }}/>
+        <Drawer.Screen name="UserDetail" component={UserDetail} options={{ headerShown: false }}/> 
+        <Drawer.Screen name="ChangePassword" component={ChangePassword} options={{ headerShown: false }}/> 
+        <Drawer.Screen name="OrderHistory" component={OrderHistory} options={{ headerShown: false }}/> 
+        <Drawer.Screen name="ProductDetail" component={ProductDetail} options={{ headerShown: false }}/>
+        <Drawer.Screen name="ProductList" component={ProductList} options={{ headerShown: false }}/>
+        <Drawer.Screen name="PopularProducts" component={PopularProducts} options={{ headerShown: false }}/>
+      </Drawer.Navigator>
     </NavigationContainer>
   );
 };

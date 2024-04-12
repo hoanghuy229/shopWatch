@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { StyleSheet, View, Text, Image, TouchableOpacity } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
+import Header from "./Header";
 
-const Cart = () => {
+const Cart = (props:any) => {
 
   const handleIncreaseQuantity = (id:number) => {
    
@@ -18,6 +19,8 @@ const Cart = () => {
 
   return (
     <View style={styles.container}>
+      <Header navigation={props.navigation}></Header>
+        <View style={styles.Cart}>
         <Text style={styles.title}>Giỏ hàng</Text>
         <ScrollView style={styles.scrollView}>
                 <View  style={styles.item}>
@@ -83,6 +86,7 @@ const Cart = () => {
                 </TouchableOpacity>
                 </View>
         </ScrollView>
+        </View>
     </View>
   );
 };
@@ -91,9 +95,11 @@ const Cart = () => {
 
 const styles = StyleSheet.create({
     container: {
-      flex: 1,
-      justifyContent: "center",
-      alignItems: "center",
+      width:"100%"
+    },
+    Cart:{
+      alignItems:"center",
+      justifyContent:"center"
     },
     title:{
         marginTop:100,
