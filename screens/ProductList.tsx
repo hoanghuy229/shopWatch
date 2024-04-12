@@ -1,24 +1,43 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, View, Text, Image, TouchableOpacity, TextInput } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { Ionicons } from '@expo/vector-icons';
 import Popover from 'react-native-popover-view';
 import Header from "./Header";
+import { getAllCategory } from "../apis/ProductApi";
+import { Category } from "../models/Category";
 
 
 const ProductList = (props:any) => {
+    const [categories,setCategories] = useState<Category[]>([]);
     const [isCatePopoverVisible, setIsCatePopoverVisible] = useState(false);
     const [isPricePopoverVisible, setIsPricePopoverVisible] = useState(false);
-    const [selectedCategory, setSelectedCategory] = useState('');
+    const [selectedCategory, setSelectedCategory] = useState(0);
     const [selectedPriceBetween,setSelectedPriceBetWeen] = useState(0);
     const [minPrice,setMinPrice] = useState(0);
     const [maxPrice,setMaxPrice] = useState(0);
+    const [keyword,setkeyword] = useState('');
+
+    useEffect(() => {
+        getAllCategory()
+        .then(
+            (data) => setCategories(data)
+        )
+        .catch(error => console.log(`${error}`))
+    },[])
 
 
-    const closeCategpryPopover = (category:string) => {
-        setSelectedCategory(category);
+    const closeCategpryPopover = (categoryId:number) => {
+        const selectedCate = categories.find(cate => cate.category_id === categoryId);
+        if(selectedCate != null){
+            setSelectedCategory(selectedCate.category_id);
+        }
+        else{
+            setSelectedCategory(0);
+        }
         setIsCatePopoverVisible(false);
     };
+    
 
     const closePriceBetweenPopover = (priceBetween:number) => {
         setSelectedPriceBetWeen(priceBetween);
@@ -97,6 +116,8 @@ return (
                     style={styles.inputSearch}
                     placeholder="Tìm kiếm"
                     placeholderTextColor="#888"
+                    value={keyword}
+                    onChangeText={setkeyword}
                 />
             </View>
            
@@ -106,32 +127,29 @@ return (
                 from={(
                     <TouchableOpacity onPress={() => setIsCatePopoverVisible(true)} style={styles.button}>
                         {
-                            selectedCategory == '' ? (
+                            selectedCategory == 0 ? (
                                 <Text style={styles.buttonText}>Danh mục</Text>
                             ) : 
                             (
-                                <Text style={styles.buttonText}>{selectedCategory}</Text>
+                                <Text style={styles.buttonText}>
+                                    {categories.find(cate => cate.category_id === selectedCategory)?.name}
+                                </Text>
                             )
                         }
                         
                     </TouchableOpacity>
                 )}
             >
-                <TouchableOpacity onPress={() => closeCategpryPopover("")}>
+                <TouchableOpacity onPress={() => closeCategpryPopover(0)}>
                     <Text>tất cả</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => closeCategpryPopover("casio")}>
-                    <Text>Đồng hồ casio</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => closeCategpryPopover("hublot")}>
-                    <Text>Đồng hồ hublot</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => closeCategpryPopover("rolex")}>
-                    <Text>Đồng hồ rolex</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => closeCategpryPopover("citizen")}>
-                    <Text>Đồng hồ citizen</Text>
-                </TouchableOpacity>
+                {
+                    categories.map(category => (
+                        <TouchableOpacity key={category.category_id} onPress={() => closeCategpryPopover(category.category_id)}>
+                            <Text>Đồng hồ {category.name}</Text>
+                        </TouchableOpacity>
+                    ))
+                }
             </Popover>
 
             <Popover
@@ -140,11 +158,11 @@ return (
                 from={(
                     <TouchableOpacity onPress={() => setIsPricePopoverVisible(true)} style={styles.button}>
                         {
-                            selectedCategory == '' ? (
+                            selectedPriceBetween == 0 ? (
                                 <Text style={styles.buttonText}>khoản giá</Text>
                             ) : 
                             (
-                                <Text style={styles.buttonText}>{selectedCategory}</Text>
+                                <Text style={styles.buttonText}>{`${minPrice} đến ${maxPrice} $`}</Text>
                             )
                         }
                         

@@ -1,209 +1,72 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, FlatList, Image, ScrollView } from 'react-native';
 import Header from './Header';
+import { getOrdersByCustomerId } from '../apis/UserApi';
+import { Order } from '../models/Order';
+import { Product } from '../models/Product';
+import { getProductByIds } from '../apis/ProductApi';
+import { useIsFocused } from '@react-navigation/native';
 
 const OrderHistoryScreen = (props:any) => {
-  // Dữ liệu lịch sử đặt hàng
-  const orderHistoryData = [
-    {
-      orderId: 1,
-      totalPrice: 500000,
-      orderDate: '2024-04-10',
-      products: [
-        {
-          productId: 1,
-          productName: 'Đồng hồ Rolex',
-          quantity: 1,
-          price: 250000,
-          imageUrl: '../designs/brands/casio.jpg',
-        },
-        {
-          productId: 2,
-          productName: 'Đồng hồ Casio',
-          quantity: 2,
-          price: 125000,
-          imageUrl: 'h../designs/brands/casio.jpg',
-        },
-      ],
-    },
-    {
-        orderId: 1,
-        totalPrice: 500000,
-        orderDate: '2024-04-10',
-        products: [
-          {
-            productId: 1,
-            productName: 'Đồng hồ Rolex',
-            quantity: 1,
-            price: 250000,
-            imageUrl: '../designs/brands/casio.jpg',
-          },
-          {
-            productId: 2,
-            productName: 'Đồng hồ Casio',
-            quantity: 2,
-            price: 125000,
-            imageUrl: 'h../designs/brands/casio.jpg',
-          },
-        ],
-      },
-      {
-        orderId: 1,
-        totalPrice: 500000,
-        orderDate: '2024-04-10',
-        products: [
-          {
-            productId: 1,
-            productName: 'Đồng hồ Rolex',
-            quantity: 1,
-            price: 250000,
-            imageUrl: '../designs/brands/casio.jpg',
-          },
-          {
-            productId: 2,
-            productName: 'Đồng hồ Casio',
-            quantity: 2,
-            price: 125000,
-            imageUrl: 'h../designs/brands/casio.jpg',
-          },
-        ],
-      },
-      {
-        orderId: 1,
-        totalPrice: 500000,
-        orderDate: '2024-04-10',
-        products: [
-          {
-            productId: 1,
-            productName: 'Đồng hồ Rolex',
-            quantity: 1,
-            price: 250000,
-            imageUrl: '../designs/brands/casio.jpg',
-          },
-          {
-            productId: 2,
-            productName: 'Đồng hồ Casio',
-            quantity: 2,
-            price: 125000,
-            imageUrl: 'h../designs/brands/casio.jpg',
-          },
-        ],
-      },
-      {
-        orderId: 1,
-        totalPrice: 500000,
-        orderDate: '2024-04-10',
-        products: [
-          {
-            productId: 1,
-            productName: 'Đồng hồ Rolex',
-            quantity: 1,
-            price: 250000,
-            imageUrl: '../designs/brands/casio.jpg',
-          },
-          {
-            productId: 2,
-            productName: 'Đồng hồ Casio',
-            quantity: 2,
-            price: 125000,
-            imageUrl: 'h../designs/brands/casio.jpg',
-          },
-        ],
-      },
-      {
-        orderId: 1,
-        totalPrice: 500000,
-        orderDate: '2024-04-10',
-        products: [
-          {
-            productId: 1,
-            productName: 'Đồng hồ Rolex',
-            quantity: 1,
-            price: 250000,
-            imageUrl: '../designs/brands/casio.jpg',
-          },
-          {
-            productId: 2,
-            productName: 'Đồng hồ Casio',
-            quantity: 2,
-            price: 125000,
-            imageUrl: 'h../designs/brands/casio.jpg',
-          },
-          {
-            productId: 2,
-            productName: 'Đồng hồ Casio',
-            quantity: 2,
-            price: 125000,
-            imageUrl: 'h../designs/brands/casio.jpg',
-          },
-          {
-            productId: 2,
-            productName: 'Đồng hồ Casio',
-            quantity: 2,
-            price: 125000,
-            imageUrl: 'h../designs/brands/casio.jpg',
-          },
-          {
-            productId: 2,
-            productName: 'Đồng hồ Casio',
-            quantity: 2,
-            price: 125000,
-            imageUrl: 'h../designs/brands/casio.jpg',
-          },
-          {
-            productId: 2,
-            productName: 'Đồng hồ Casio',
-            quantity: 2,
-            price: 125000,
-            imageUrl: 'h../designs/brands/casio.jpg',
-          },
-        ],
-      },
-      {
-        orderId: 1,
-        totalPrice: 500000,
-        orderDate: '2024-04-10',
-        products: [
-          {
-            productId: 1,
-            productName: 'Đồng hồ Rolex',
-            quantity: 1,
-            price: 250000,
-            imageUrl: '../designs/brands/casio.jpg',
-          },
-          {
-            productId: 2,
-            productName: 'Đồng hồ Casio',
-            quantity: 2,
-            price: 125000,
-            imageUrl: 'h../designs/brands/casio.jpg',
-          },
-        ],
-      },
-  ];
+  const [orders,setOrders] = useState<Order[]>([]);
+  const [products,setProducts] = useState<Product[]>([]);
+
+  const isFocused = useIsFocused(); // Sử dụng useIsFocused để kiểm tra trạng thái focus
+
+  useEffect(() => {
+    getOrdersByCustomerId()
+    .then(
+      (data) => setOrders(data)
+    )
+    .catch(error => console.log(`${error}`))
+  },[isFocused])
+
+  useEffect(() => {
+    const productIds:number[] = [];
+    orders.forEach((order) => {
+      if(order.order_details){
+        order.order_details.forEach((orderDetail) => {
+          productIds.push(orderDetail.product_id);
+        });
+      }
+    });
+
+    getProductByIds(productIds)
+    .then(
+      (productResponse) => {
+        setProducts(productResponse);
+      }
+    )
+    .catch(error => console.log(`${error}`))
+  },[orders])
+
 
   return (
     <View style={styles.container}>
         <Header navigation={props.navigation}></Header>
-        <Text style={styles.title}>Lịch sử đặt hàng</Text>
         <ScrollView>
-            {
-                orderHistoryData.map(order => (
-                    <View style={styles.orderItem}>
-                    <Text>Total Price: {order.totalPrice} $</Text>
-                    <Text>Order Date: {order.orderDate}</Text>
-                        <ScrollView horizontal>
-                            {order.products.map((product) => (
-                            <View style={styles.productCard} key={product.productId}>
-                                <Text>{product.productName}</Text>
-                                <Text>Quantity: {product.quantity}</Text>
-                                <Text>Price: {product.price} $</Text>
-                                <Image source={require('../designs/brands/casio.jpg')} style={styles.productImage} />
-                            </View>
-                            ))}
-                        </ScrollView>
-                    </View>
-                ))}
+          <Text style={styles.title}>Lịch sử đặt hàng</Text>
+          {
+            orders.map(order => (
+              <View style={styles.orderItem} key={order.id}>
+                <Text>Total Price: {order.total_price} $</Text>
+                <Text>Order Date: {new Date(order.order_date).toLocaleDateString()}</Text>
+                <ScrollView horizontal>
+                  {order.order_details?.map((orderDetail) => {
+                    const product = products.find((p) => orderDetail.product_id === p.product_id);
+                    return (
+                      <View style={styles.productCard} key={product?.product_id}>
+                        <Text>{product?.name}</Text>
+                        <Text>Quantity: {orderDetail.quantity}</Text>
+                        <Text>Price: {product?.price} $</Text>
+                        <Image source={{uri : `http://10.0.2.2:8080/api/v1/products/images/${product?.image}`}} style={styles.productImage} />
+                      </View>
+                    );
+                  })}
+                </ScrollView>
+              </View>
+            ))
+          }
         </ScrollView>
     </View>
   );

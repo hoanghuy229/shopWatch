@@ -7,7 +7,6 @@ import Register from './screens/Register';
 import Cart from './screens/Cart';
 import OrderConfirm from './screens/OrderConfirm';
 import UserDetail from './screens/UserDetail';
-import ChangePassword from './screens/ChangePassword';
 import OrderHistory from './screens/OrderHistory';
 import ProductDetail from './screens/ProductDetail';
 import ProductList from './screens/ProductList';
@@ -26,7 +25,6 @@ const App = () => {
         <Drawer.Screen name="Cart" component={Cart} options={{ headerShown: false }}/> 
         <Drawer.Screen name="OrderConfirm" component={OrderConfirm} options={{ headerShown: false }}/>
         <Drawer.Screen name="UserDetail" component={UserDetail} options={{ headerShown: false }}/> 
-        <Drawer.Screen name="ChangePassword" component={ChangePassword} options={{ headerShown: false }}/> 
         <Drawer.Screen name="OrderHistory" component={OrderHistory} options={{ headerShown: false }}/> 
         <Drawer.Screen name="ProductDetail" component={ProductDetail} options={{ headerShown: false }}/>
         <Drawer.Screen name="ProductList" component={ProductList} options={{ headerShown: false }}/>

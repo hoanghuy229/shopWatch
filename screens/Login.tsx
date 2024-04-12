@@ -1,38 +1,48 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet,Alert } from 'react-native';
 import { login } from '../apis/UserApi';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { LoginDTO } from '../dtos/LoginDTO';
 
 const Login = (props:any) => {
     const [phoneNumber, setPhoneNumber] = useState('');
     const [password, setPassword] = useState('');
 
     const handleLogin = async () => {
-        // try{
-        //     const response = await login(phoneNumber,password);
-        //     const token = response;
-        //     await AsyncStorage.setItem('token',token);
-        //     Alert.alert('Thông báo', "thành công");
-        // }
-        // catch(error){
-        //     Alert.alert(
-        //         'Lỗi',
-        //         'Mật khẩu không chính xác. Vui lòng thử lại.',
-        //         [
-        //           {
-        //             text: 'Đóng',
-        //             onPress: () => console.log('Đóng'),
-        //             style: 'cancel',
-        //           },
-        //         ],
-        //         { cancelable: false }
-        //       );
-        // }
+        if(phoneNumber == '' || password == ''){
+            alert("nhập thông tin");
+            return;
+        }
+        try{
+            const loginDTO:LoginDTO = {
+                phone_number:phoneNumber,
+                password:password
+            }
+                const response = await login(loginDTO);
+                const token = response;
+                await AsyncStorage.setItem('token',token);
+                props.route.params.onLoginSuccess(); 
+                props.navigation.navigate('Home');
+        }
+        catch(error){
+            Alert.alert(
+                'Lỗi',
+                'Mật khẩu không chính xác. Vui lòng thử lại.',
+                [
+                  {
+                    text: 'Đóng',
+                    onPress: () => console.log('Đóng'),
+                    style: 'cancel',
+                  },
+                ],
+                { cancelable: false }
+              );
+        }
     };
 
     return (
         <View style={styles.container}>
-            <Text style={styles.welcome}>Welcome</Text>
+            <Text style={styles.welcome} onPress={() => props.navigation.navigate('Home')}>Welcome</Text>
             <View style={styles.card}>
                 <Text style={styles.login}>Login</Text>
                 <Text style={styles.label}>Số điện thoại</Text>
@@ -74,7 +84,7 @@ const styles = StyleSheet.create({
         padding: 20,
         justifyContent: 'flex-end',
         alignItems: 'center',
-        backgroundColor: 'purple',
+        backgroundColor: '#faffe9',
     },
     login: {
         marginBottom:70,
@@ -86,7 +96,7 @@ const styles = StyleSheet.create({
         marginBottom:80,
         fontStyle:"italic",
         fontSize:50,
-        color:"white"
+        color:"darkorange"
     },
     label: {
         fontSize: 16,

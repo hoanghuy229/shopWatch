@@ -1,16 +1,66 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { RegisterDTO } from '../dtos/RegisterDTO';
+import { register } from '../apis/UserApi';
+import { ScrollView } from 'react-native-gesture-handler';
 
-const Register = () => {
+const Register = (props:any) => {
+    const [firstName,setFirstName] = useState('');
+    const [lastName,setLastName] = useState('');
+    const [phoneNumber,setPhoneName] = useState('');
+    const [email,setEmail] = useState('');
+    const [password,setPassword] = useState('');
+    const [rePassword,setRePassword] = useState('');
 
-    const handleRegister = () => {
-        // Xử lý khi người dùng bấm vào nút Quên mật khẩu
+
+
+    const handleRegister = async () => {
+        if(firstName === '' || lastName === '' || phoneNumber === '' || email === '' || password === '' || rePassword === ''){
+            alert('điền đầy đủ thông tin!!!');
+            return;
+        }
+        if(password != rePassword){
+            alert('mật khẩu không khớp!!!');
+            return;
+        }
+        
+        const registerDTO:RegisterDTO = {
+            phone_number:phoneNumber,
+            first_name:firstName,
+            last_name:lastName,
+            email:email,
+            password:password,
+        }
+        try{
+            const response:string = await register(registerDTO);
+            if(!response.includes("register success")){
+                alert(`${response}`)
+            }
+            else{
+                alert("đăng ký thành công");
+                props.navigation.navigate('Home');
+            }
+        }
+        catch (error:any) {
+            Alert.alert(
+                'Lỗi',
+                error.message,
+                [
+                    {
+                        text: 'Đóng',
+                        onPress: () => console.log('Đóng'),
+                        style: 'cancel',
+                    },
+                ],
+                { cancelable: false }
+            );
+        }
     };
 
     return (
         <View style={styles.container}>
-            <Text style={styles.welcome}>Welcome</Text>
-            <View style={styles.card}>
+            <Text style={styles.welcome} onPress={() => props.navigation.navigate('Home')}>Welcome</Text>
+            <ScrollView style={styles.card}>
                 <Text style={styles.login}>Register</Text>
 
 
@@ -22,10 +72,14 @@ const Register = () => {
                     <TextInput
                         style={styles.input}
                         placeholder="Nhập tên"
+                        value={firstName}
+                        onChangeText={setFirstName}
                     />
                     <TextInput
                         style={styles.inputRight}
                         placeholder="Nhập họ"
+                        value={lastName}
+                        onChangeText={setLastName}
                     />
                 </View>
 
@@ -39,11 +93,14 @@ const Register = () => {
                         style={styles.input}
                         keyboardType="phone-pad"
                         placeholder="Nhập số điện thoại"
+                        value={phoneNumber}
+                        onChangeText={setPhoneName}
                     />
                     <TextInput
                         style={styles.inputRight}
-                        secureTextEntry
                         placeholder="Nhập email"
+                        value={email}
+                        onChangeText={setEmail}
                     />
                 </View>
 
@@ -57,18 +114,22 @@ const Register = () => {
                         style={styles.input}
                         secureTextEntry
                         placeholder="Nhập mật khẩu"
+                        value={password}
+                        onChangeText={setPassword}
                     />
                     <TextInput
                         style={styles.inputRight}
                         secureTextEntry
                         placeholder="Nhập lại mật khẩu"
+                        value={rePassword}
+                        onChangeText={setRePassword}
                     />
                 </View>
                 
                 <TouchableOpacity style={styles.loginButton} onPress={handleRegister}>
                     <Text style={styles.loginButtonText}>Đăng ký</Text>
                 </TouchableOpacity>
-            </View>
+            </ScrollView>
         </View>
     );
 };
@@ -79,7 +140,7 @@ const styles = StyleSheet.create({
         padding: 20,
         justifyContent: 'flex-end',
         alignItems: 'center',
-        backgroundColor: 'purple',
+        backgroundColor: '#faffe9',
     },
     rowLabel:{
         flexDirection:"row",
@@ -97,8 +158,9 @@ const styles = StyleSheet.create({
     welcome: {
         marginBottom:80,
         fontStyle:"italic",
+        marginTop:50,
         fontSize:50,
-        color:"white"
+        color:"darkorange"
     },
     labelRight:{
         marginLeft:170
@@ -155,7 +217,7 @@ const styles = StyleSheet.create({
         width:'110%',
         height:'70%',
         paddingTop: 40,
-        paddingLeft:1,
+        paddingLeft:20,
         paddingRight:10,
         backgroundColor: 'white',
         borderRadius: 20,

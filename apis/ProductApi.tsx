@@ -47,3 +47,31 @@ export async function getCategory(categoryId:number | undefined):Promise<Categor
     }
     
 }
+
+export async function getProductByIds(ids:number[]):Promise<Product[]> {
+    const idsString:string = ids.join(",");
+
+    const url:string = `http://10.0.2.2:8080/api/v1/products/by-ids?ids=${idsString}`;
+
+    try{
+        const response = await axios.get(url);
+
+        const result:Product[] = response.data;
+
+        return result;
+    }
+    catch(error){
+        throw new Error(`${error}`)
+    }
+}
+
+export async function getAllCategory():Promise<Category[]> {
+    const url:string = `http://10.0.2.2:8080/api/v1/categories`;
+
+    const response = await axios.get(url);
+
+    const result:Category[] = response.data;
+
+    return result;
+    
+}

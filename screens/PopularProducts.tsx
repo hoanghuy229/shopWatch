@@ -23,7 +23,7 @@ const PopularProducts = (props:any) => {
         <ScrollView style={styles.container}>
             <View style={styles.productContainer}>
                 {popularProductsData.map((product, index) => (
-                    <TouchableOpacity key={index} style={styles.productCard}>
+                    <TouchableOpacity key={index} style={styles.productCard} >
                         <Image source={{uri : `http://10.0.2.2:8080/api/v1/products/images/${product.image}`}} style={styles.productImage} alt="product img"/>
                         <Text style={styles.productName}>{product.name}</Text>
                         <Text style={styles.productPrice}>{product.price} $</Text>
