@@ -6,6 +6,7 @@ import { Product } from "../models/Product";
 import { addtoCart, getCart, getQuantity, removeFromCart } from "../services/CartService";
 import { getProductByIds } from "../apis/ProductApi";
 import { useIsFocused } from '@react-navigation/native';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Cart = (props:any) => {
   const [products,setProducts] = useState<Product[]>([]);
@@ -20,6 +21,7 @@ const Cart = (props:any) => {
         const ids: number[] = Object.keys(cartItems).map(Number);
   
         if (ids.length === 0) {
+          setProducts([]);
           return;
         }
   
@@ -71,6 +73,24 @@ const Cart = (props:any) => {
     return total;
   };
 
+  const createOrder = async () => {
+
+    const getMyCart = await AsyncStorage.getItem('cart');
+    const getToken = await AsyncStorage.getItem('token');
+
+    if (getMyCart === '{}') {
+      alert("không có sản phẩm");
+      return;
+    }
+    if(getToken === null){
+      alert("đăng nhập để đặt hàng");
+      return;
+    }
+
+    props.navigation.navigate('OrderConfirm', { products, quantities,calculateTotal });
+    
+  }
+
   return (
     <ScrollView style={styles.container}>
       <Header navigation={props.navigation}></Header>
@@ -99,7 +119,7 @@ const Cart = (props:any) => {
           }
           <View style={{ flexDirection: "row", justifyContent: "space-between", margin: 10 }}>
             <Text style={styles.total}>Tổng tiền: {calculateTotal()} $</Text>
-            <TouchableOpacity style={styles.button}>
+            <TouchableOpacity style={styles.button} onPress={() => createOrder()}>
               <Text style={{ color: "white" }}>Đặt hàng</Text>
             </TouchableOpacity>
           </View>

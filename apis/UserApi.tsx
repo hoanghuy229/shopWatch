@@ -5,7 +5,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Customer } from "../models/Customer";
 import { CustomerDTO } from "../dtos/CustomerDTO";
 import { Order } from "../models/Order";
-
+import {OrderDTO} from "../dtos/OrderDTO"
 export async function login(loginDTO:LoginDTO): Promise<any> {
     const url: string = `http://10.0.2.2:8080/api/v1/customers/login`;
 
@@ -119,4 +119,29 @@ export async function getOrdersByCustomerId():Promise<any> {
     catch(error){
         throw new Error(`${error}`);
     }
+}
+
+export async function placeOrder(orderDTO:OrderDTO):Promise<any> {
+   try{
+    const url:string = `http://10.0.2.2:8080/api/v1/orders`;
+
+    const token = await AsyncStorage.getItem('token');
+
+    const response = await axios.post(url,{
+        total_price:orderDTO.total_price,
+        customer_id:orderDTO.customer_id,
+        payment_id:orderDTO.payment_id,
+        order_details:orderDTO.order_details
+    },{
+        headers:{
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        }
+    });
+
+    return response.data;
+   }
+   catch(error){
+    console.log(`${error}`)
+   }
 }

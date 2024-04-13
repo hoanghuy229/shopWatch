@@ -47,8 +47,8 @@ const OrderHistoryScreen = (props:any) => {
         <ScrollView>
           <Text style={styles.title}>Lịch sử đặt hàng</Text>
           {
-            orders.map(order => (
-              <View style={styles.orderItem} key={order.id}>
+            orders.map((order,index) => (
+              <View style={styles.orderItem} key={index}>
                 <Text>Total Price: {order.total_price} $</Text>
                 <Text>Order Date: {new Date(order.order_date).toLocaleDateString()}</Text>
                 <ScrollView horizontal>

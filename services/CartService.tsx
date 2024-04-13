@@ -67,7 +67,8 @@ export const getCart = async () => {
 
 export const deleteCart = async () => {
     try {
-        await AsyncStorage.removeItem('cart');
+        let cartItemsString = JSON.stringify({});
+        await AsyncStorage.setItem('cart',cartItemsString);
     }
     catch (error) {
         console.error(`${error}`);
