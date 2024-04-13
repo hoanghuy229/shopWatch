@@ -5,6 +5,8 @@ import { ScrollView } from "react-native-gesture-handler";
 import { TouchableOpacity } from 'react-native';
 import { Product } from "../models/Product";
 import { getPopularProducts } from "../apis/ProductApi";
+import { addtoCart, deleteCart, getCart } from "../services/CartService";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const PopularProducts = (props:any) => {
     const [popularProductsData,setPopularProductsData] = useState<Product[]>([]);
@@ -17,7 +19,18 @@ const PopularProducts = (props:any) => {
             }
         )
         .catch(error => console.log(error));
+
     },[]);
+
+    const addThisToCart = async (productId:number) => {
+        try{
+            await addtoCart(productId);
+            alert(`thêm thành công`)
+        }
+        catch(error){
+            console.log(`${error}`)
+        }
+    }
 
     return (
         <ScrollView style={styles.container}>
@@ -28,7 +41,7 @@ const PopularProducts = (props:any) => {
                         <Text style={styles.productName}>{product.name}</Text>
                         <Text style={styles.productPrice}>{product.price} $</Text>
                         <View style={styles.buttonsContainer}>
-                            <TouchableOpacity style={styles.cart}>
+                            <TouchableOpacity style={styles.cart} onPress={() => addThisToCart(product.product_id)}>
                                 <Ionicons name="cart" size={20} color="darkorange" />
                             </TouchableOpacity>
                             <TouchableOpacity style={styles.detail}>

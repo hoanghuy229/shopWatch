@@ -1,15 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, View, Text, Image, TouchableOpacity, TextInput } from "react-native";
+import { StyleSheet, View, Text, Image, TouchableOpacity, TextInput,FlatList  } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { Ionicons } from '@expo/vector-icons';
 import Popover from 'react-native-popover-view';
 import Header from "./Header";
-import { getAllCategory } from "../apis/ProductApi";
+import { getAllCategory, getAllProduct } from "../apis/ProductApi";
 import { Category } from "../models/Category";
+import { Product } from "../models/Product";
+import { addtoCart } from "../services/CartService";
 
 
 const ProductList = (props:any) => {
     const [categories,setCategories] = useState<Category[]>([]);
+    const [products,setProducts] = useState<Product[]>([]);
     const [isCatePopoverVisible, setIsCatePopoverVisible] = useState(false);
     const [isPricePopoverVisible, setIsPricePopoverVisible] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState(0);
@@ -17,6 +20,8 @@ const ProductList = (props:any) => {
     const [minPrice,setMinPrice] = useState(0);
     const [maxPrice,setMaxPrice] = useState(0);
     const [keyword,setkeyword] = useState('');
+    const [currentPage, setCurrentPage] = useState(0);
+    const [totalPages, setTotalPages] = useState(0);
 
     useEffect(() => {
         getAllCategory()
@@ -26,88 +31,89 @@ const ProductList = (props:any) => {
         .catch(error => console.log(`${error}`))
     },[])
 
+    useEffect(() => {
+        getAllProduct(currentPage, selectedCategory, keyword, minPrice, maxPrice)
+            .then((data) => {
+                setProducts([...products, ...data.result]);
+                setTotalPages(data.totalPage);
+            })
+            .catch(error => console.log(`${error}`))
+    },[currentPage,selectedCategory,keyword,minPrice,maxPrice])
 
-    const closeCategpryPopover = (categoryId:number) => {
-        const selectedCate = categories.find(cate => cate.category_id === categoryId);
-        if(selectedCate != null){
-            setSelectedCategory(selectedCate.category_id);
-        }
-        else{
+    useEffect(() => {
+        const unsubscribe = props.navigation.addListener('focus', () => {
             setSelectedCategory(0);
-        }
+            setSelectedPriceBetWeen(0);
+            setkeyword('');
+            setCurrentPage(0);
+            setProducts([]);
+        });
+    
+        // Xóa sự kiện khi component bị unmount
+        return unsubscribe;
+    }, [props.navigation]);
+    
+
+    const closeCategoryPopover = (categoryId: number) => {
+        const selectedCate = categories.find(cate => cate.category_id === categoryId);
+        setSelectedCategory(selectedCate ? selectedCate.category_id : 0);
         setIsCatePopoverVisible(false);
     };
     
 
-    const closePriceBetweenPopover = (priceBetween:number) => {
+    const closePriceBetweenPopover = (priceBetween: number) => {
         setSelectedPriceBetWeen(priceBetween);
         setIsPricePopoverVisible(false);
 
-        if(priceBetween === 0){
-            setMaxPrice(0),
-            setMinPrice(0)
-        }
-        if(priceBetween === 1){
-            setMinPrice(50);
-            setMaxPrice(100);
-        }
-        if(priceBetween === 2){
-            setMinPrice(100);
-            setMaxPrice(200);
-        }
-        if(priceBetween === 3){
-            setMinPrice(200);
-            setMaxPrice(300);
-        }
-        if(priceBetween === 4){
-            setMinPrice(300);
-            setMaxPrice(400);
-        }
+        const priceRanges: {[key: number]: number[];} = 
+        {
+            0: [0, 0],
+            1: [50, 100],
+            2: [100, 200],
+            3: [200, 300],
+            4: [300, 400],
+        };
 
+        const [min, max] = priceRanges[priceBetween];
+        setMinPrice(min);
+        setMaxPrice(max);
     };
 
- // Dữ liệu sản phẩm nổi bật (tĩnh)
- const popularProductsData = [
-    {
-        id: 1,
-        name: 'Product 1',
-        price: '$100',
-        image: require('../designs/brands/casio.jpg'),
-    },
-    {
-        id: 2,
-        name: 'Product 2',
-        price: '$150',
-        image: require('../designs/brands/citizen.jpg'),
-    },
-    {
-        id: 3,
-        name: 'Product 3',
-        price: '$120',
-        image: require('../designs/brands/hublot.jpg'),
-    },
-    {
-        id: 4,
-        name: 'Product 4',
-        price: '$200',
-        image: require('../designs/brands/rolex.jpg'),
-    },
-    {
-        id: 5,
-        name: 'Product 5',
-        price: '$180',
-        image: require('../designs/brands/citizen.jpg'),
-    },
-    {
-        id: 6,
-        name: 'Product 6',
-        price: '$90',
-        image: require('../designs/brands/casio.jpg'),
-    },
-];
+    const addThisToCart = async (productId:number) => {
+        try{
+            await addtoCart(productId);
+            alert(`thêm thành công`)
+        }
+        catch(error){
+            console.log(`${error}`)
+        }
+    }
+
+
+    const renderItem = ({ item }: { item: Product }) => (
+            <TouchableOpacity style={styles.productCard}>
+            <Image source={{ uri: `http://10.0.2.2:8080/api/v1/products/images/${item.image}` }} style={styles.productImage} />
+            <Text style={styles.productName}>{item.name}</Text>
+            <Text style={styles.productPrice}>{item.price} $</Text>
+            <View style={styles.buttonsContainer}>
+                <TouchableOpacity style={styles.cart}>
+                    <Ionicons name="cart" size={20} color="darkorange" onPress={() => addThisToCart(item.product_id)}/>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.detail}>
+                    <Ionicons name="eye" size={20} color="green" onPress={() => props.navigation.navigate('ProductDetail', { productId: item.product_id })}/>
+                </TouchableOpacity>
+            </View>
+        </TouchableOpacity>
+    );
+
+    const handleLoadMore = () => {
+        if (currentPage < totalPages - 1) {
+            setCurrentPage(currentPage + 1);
+        }
+    };
 
 return (
-    <ScrollView style={styles.container}>
+    <View style={styles.container}>
         <Header navigation={props.navigation}></Header>
           <View style={styles.header}>
             <View style={styles.searchContainer}>
@@ -140,12 +146,12 @@ return (
                     </TouchableOpacity>
                 )}
             >
-                <TouchableOpacity onPress={() => closeCategpryPopover(0)}>
+                <TouchableOpacity onPress={() => closeCategoryPopover(0)}>
                     <Text>tất cả</Text>
                 </TouchableOpacity>
                 {
                     categories.map(category => (
-                        <TouchableOpacity key={category.category_id} onPress={() => closeCategpryPopover(category.category_id)}>
+                        <TouchableOpacity key={category.category_id} onPress={() => closeCategoryPopover(category.category_id)}>
                             <Text>Đồng hồ {category.name}</Text>
                         </TouchableOpacity>
                     ))
@@ -186,24 +192,15 @@ return (
                 </TouchableOpacity>
             </Popover>
           </View>
-        <View style={styles.productContainer}>
-            {popularProductsData.map((product, index) => (
-                <TouchableOpacity key={index} style={styles.productCard}>
-                    <Image source={product.image} style={styles.productImage} />
-                    <Text style={styles.productName}>{product.name}</Text>
-                    <Text style={styles.productPrice}>{product.price} $</Text>
-                    <View style={styles.buttonsContainer}>
-                        <TouchableOpacity style={styles.cart}>
-                            <Ionicons name="cart" size={20} color="darkorange" />
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.detail}>
-                        <Ionicons name="eye" size={20} color="green"/>
-                        </TouchableOpacity>
-                    </View>
-                </TouchableOpacity>
-            ))}
-        </View>
-    </ScrollView>
+          <FlatList
+                data={products}
+                renderItem={renderItem}
+                keyExtractor={(item, index) => index.toString()}
+                onEndReached={handleLoadMore}
+                onEndReachedThreshold={0.1}
+                numColumns={2}
+            />
+    </View>
 );
 };
 
@@ -277,12 +274,13 @@ productContainer: {
     paddingHorizontal: 10,
 },
 productCard: {
-    width: '48%',
+    width: '45%',
     marginVertical: 10,
     borderWidth: 1,
     borderColor: '#ccc',
     borderRadius: 10,
     padding: 10,
+    marginLeft:10
 },
 productImage: {
     width: '100%',

@@ -5,6 +5,7 @@ import Header from "./Header";
 import { Product } from "../models/Product";
 import { getCategory, getProductDetail } from "../apis/ProductApi";
 import { Category } from "../models/Category";
+import { addtoCart } from "../services/CartService";
 
 
 const ProductDetail = (props:any) => {
@@ -32,6 +33,17 @@ const ProductDetail = (props:any) => {
         .catch(error => console.log(error));
     },[])
 
+
+    const addThisToCart = async (productId:number) => {
+        try{
+            await addtoCart(productId);
+            alert(`thêm thành công`)
+        }
+        catch(error){
+            console.log(`${error}`)
+        }
+    }
+
     return (
         <ScrollView style={styles.container}>
             <Header navigation={props.navigation}></Header>
@@ -56,7 +68,7 @@ const ProductDetail = (props:any) => {
 
                 <View style={styles.buttonView}>
                     <TouchableOpacity style={styles.addToCartButton}>
-                        <Ionicons name="cart" size={20} color="darkorange" />
+                        <Ionicons name="cart" size={20} color="darkorange" onPress={() => addThisToCart(productIdInt)}/>
                         <Text style={styles.cartText}>giỏ hàng</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.buyNowButton}>
