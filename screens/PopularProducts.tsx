@@ -40,14 +40,25 @@ const PopularProducts = (props:any) => {
                         <Image source={{uri : `http://10.0.2.2:8080/api/v1/products/images/${product.image}`}} style={styles.productImage} alt="product img"/>
                         <Text style={styles.productName}>{product.name}</Text>
                         <Text style={styles.productPrice}>{product.price} $</Text>
-                        <View style={styles.buttonsContainer}>
-                            <TouchableOpacity style={styles.cart} onPress={() => addThisToCart(product.product_id)}>
-                                <Ionicons name="cart" size={20} color="darkorange" />
-                            </TouchableOpacity>
-                            <TouchableOpacity style={styles.detail}>
-                            <Ionicons name="eye" size={20} color="green" onPress={() => props.navigation.navigate('ProductDetail', { productId: product.product_id })}/>
-                            </TouchableOpacity>
-                        </View>
+                        {
+                            product.quantity > 0 ? 
+                            (
+                                <View style={styles.buttonsContainer}>
+                                    <TouchableOpacity style={styles.cart} onPress={() => addThisToCart(product.product_id)}>
+                                        <Ionicons name="cart" size={20} color="darkorange" />
+                                    </TouchableOpacity>
+                                    <TouchableOpacity style={styles.detail}>
+                                    <Ionicons name="eye" size={20} color="green" onPress={() => props.navigation.navigate('ProductDetail', { productId: product.product_id })}/>
+                                    </TouchableOpacity>
+                                </View>
+                            ) 
+                            :
+                            (
+                                <View style={styles.buttonsContainer}>
+                                    <Text style={{fontSize:20, fontStyle:"italic"}}>liên hệ đặt hàng</Text>
+                                </View>
+                            )
+                        }
                     </TouchableOpacity>
                 ))}
             </View>

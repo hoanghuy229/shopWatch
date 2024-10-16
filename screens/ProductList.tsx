@@ -65,7 +65,7 @@ const ProductList = (props:any) => {
         setSelectedPriceBetWeen(priceBetween);
         setIsPricePopoverVisible(false);
 
-        const priceRanges: {[key: number]: number[];} = 
+        const priceRanges: {[key: number]: number[]} = 
         {
             0: [0, 0],
             1: [50, 100],
@@ -95,14 +95,25 @@ const ProductList = (props:any) => {
             <Image source={{ uri: `http://10.0.2.2:8080/api/v1/products/images/${item.image}` }} style={styles.productImage} />
             <Text style={styles.productName}>{item.name}</Text>
             <Text style={styles.productPrice}>{item.price} $</Text>
-            <View style={styles.buttonsContainer}>
-                <TouchableOpacity style={styles.cart}>
-                    <Ionicons name="cart" size={20} color="darkorange" onPress={() => addThisToCart(item.product_id)}/>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.detail}>
-                    <Ionicons name="eye" size={20} color="green" onPress={() => props.navigation.navigate('ProductDetail', { productId: item.product_id })}/>
-                </TouchableOpacity>
-            </View>
+            {
+                item.quantity > 0 ? 
+                (
+                    <View style={styles.buttonsContainer}>
+                        <TouchableOpacity style={styles.cart}>
+                            <Ionicons name="cart" size={20} color="darkorange" onPress={() => addThisToCart(item.product_id)}/>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.detail}>
+                            <Ionicons name="eye" size={20} color="green" onPress={() => props.navigation.navigate('ProductDetail', { productId: item.product_id })}/>
+                        </TouchableOpacity>
+                    </View>
+                ) 
+                : 
+                (
+                    <View style={styles.buttonsContainer}>
+                        <Text style={{fontSize:20, fontStyle:"italic"}}>liên hệ đặt hàng</Text>
+                    </View>
+                )
+            }
         </TouchableOpacity>
     );
 

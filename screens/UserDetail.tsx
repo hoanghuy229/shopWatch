@@ -80,7 +80,7 @@ const UserDetail = (props:any) => {
     return (
         <View style={styles.container}>
             <Text style={styles.welcome} onPress={() => props.navigation.navigate('Home')}>User Information</Text>
-            <ScrollView style={styles.card}>
+            <View style={styles.card}>
                 <Image source={require("../designs/user.jpg")} style={styles.avatar}></Image>
 
 
@@ -145,7 +145,7 @@ const UserDetail = (props:any) => {
                 <TouchableOpacity style={styles.loginButton} onPress={handleDetailChange}>
                     <Text style={styles.loginButtonText}>cập nhật</Text>
                 </TouchableOpacity>
-            </ScrollView>
+            </View>
         </View>
     );
 };
@@ -216,9 +216,6 @@ const styles = StyleSheet.create({
         marginLeft:5,
         width:150,
     },
-    CreateAccount:{
-
-    },
     loginButton: {
         backgroundColor: 'transparent', // Màu nền trong suốt
         borderWidth: 1, // Độ rộng của viền
@@ -228,7 +225,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20, // Khoảng cách ngang của phần padding
         width:150,
         marginLeft:120,
-        marginTop:20
+        marginTop:5
     },
     loginButtonText: {
         color: '#28a745', // Màu chữ

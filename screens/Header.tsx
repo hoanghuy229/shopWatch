@@ -8,7 +8,7 @@ const Header = (props: any) => {
             <TouchableOpacity onPress={() => props.navigation.openDrawer()}>
                 <Ionicons name="menu" size={30} color="black" style={styles.icon} />
             </TouchableOpacity>
-            <Text style={styles.title}>Quốc Đại luxury</Text>
+            <Text style={styles.title}>Shop App</Text>
             <Ionicons onPress={() => props.navigation.navigate('Cart')} name="cart" size={30} color="black" style={styles.icon}/>
         </View>
     );
